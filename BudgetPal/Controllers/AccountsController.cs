@@ -43,15 +43,23 @@ namespace BudgetPal.Controllers
         // POST: Account/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(Account account)
         {
             try
             {
-                // TODO: Add insert logic here
-
+                var user = await GetCurrentUserAsync();
+                var newAccount = new Account()
+                {
+                    ApplicationUserId = user.Id,
+                    Balance = account.Balance,
+                    Name = account.Name,
+                    DateCreated = DateTime.Now
+                };
+                _context.Accounts.Add(newAccount);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
                 return View();
             }
