@@ -4,10 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using BudgetPal.Data;
 using BudgetPal.Models;
+using BudgetPal.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace BudgetPal.Controllers
 {
@@ -37,9 +40,15 @@ namespace BudgetPal.Controllers
         }
 
         // GET: AccountLogs/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
+            var user = await GetCurrentUserAsync();
+            var logTypes = await _context.LogTypes.Where(lT => lT.ApplicationUserId == user.Id)
+                .Select(lT => new SelectListItem() { Text = lT.Name, Value = lT.Id.ToString() } ).ToListAsync();
+
+            var logModel = new AccountLogViewModel();
+            logModel.LogTypeOptions = logTypes;
+            return View(logModel);
         }
 
         // POST: AccountLogs/Create
