@@ -12,65 +12,60 @@ using Microsoft.AspNetCore.Mvc;
 namespace BudgetPal.Controllers
 {
     [Authorize]
-    public class AccountsController : Controller
+    public class AccountLogsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountsController(ApplicationDbContext context, UserManager<ApplicationUser> usermanager)
+        public AccountLogsController(ApplicationDbContext context, UserManager<ApplicationUser> usermanager)
         {
             _userManager = usermanager;
             _context = context;
         }
-        // GET: Account
-        public ActionResult Index()
+        // GET: AccountLogs
+        public async Task<ActionResult> Index()
         {
-            return View();
+            var user = await GetCurrentUserAsync();
+            var logs = _context.AccountLogs.Where(l => l.ApplicationUserId == user.Id);
+            return View(logs);
         }
-        // GET: Account/Details/5
+
+        // GET: AccountLogs/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Account/Create
+        // GET: AccountLogs/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Account/Create
+        // POST: AccountLogs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Account account)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
-                var user = await GetCurrentUserAsync();
-                var newAccount = new Account()
-                {
-                    ApplicationUserId = user.Id,
-                    Balance = account.Balance,
-                    Name = account.Name,
-                    DateCreated = DateTime.Now
-                };
-                _context.Accounts.Add(newAccount);
-                await _context.SaveChangesAsync();
+                // TODO: Add insert logic here
+
                 return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch
             {
                 return View();
             }
         }
 
-        // GET: Account/Edit/5
+        // GET: AccountLogs/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Account/Edit/5
+        // POST: AccountLogs/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -87,13 +82,13 @@ namespace BudgetPal.Controllers
             }
         }
 
-        // GET: Account/Delete/5
+        // GET: AccountLogs/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: Account/Delete/5
+        // POST: AccountLogs/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -110,6 +105,5 @@ namespace BudgetPal.Controllers
             }
         }
         private async Task<ApplicationUser> GetCurrentUserAsync() => await _userManager.GetUserAsync(HttpContext.User);
-
     }
 }

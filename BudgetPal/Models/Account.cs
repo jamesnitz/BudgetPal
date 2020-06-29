@@ -14,8 +14,6 @@ namespace BudgetPal.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        //[DataType(DataType.Date)]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateCreated { get; set; }
         [Required]
         public string ApplicationUserId { get; set; }
