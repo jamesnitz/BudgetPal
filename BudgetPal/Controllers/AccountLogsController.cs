@@ -54,15 +54,28 @@ namespace BudgetPal.Controllers
         // POST: AccountLogs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(AccountLogViewModel viewModel)
         {
             try
             {
+                var user = await GetCurrentUserAsync();
+                var newLog = new AccountLog()
+                {
+                    ApplicationUserId = user.Id,
+                    Amount = viewModel.Amount,
+                    LogTypeId = viewModel.LogTypeId,
+                    Deposit = viewModel.Deposit,
+                    AccountId = viewModel.AccountId,
+                    Date = viewModel.Date,
+                    Name = viewModel.Name
+                };
+                _context.AccountLogs.Add(newLog);
+                await _context.SaveChangesAsync();
                 // TODO: Add insert logic here
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
                 return View();
             }
