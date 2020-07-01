@@ -244,7 +244,7 @@ namespace BudgetPal.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: true),
                     ApplicationUserId = table.Column<string>(nullable: false),
                     LogTypeId = table.Column<int>(nullable: false),
                     Amount = table.Column<decimal>(nullable: false),
